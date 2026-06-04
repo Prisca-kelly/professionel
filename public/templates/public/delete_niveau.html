@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supprimer un Niveau</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .confirm-container { background: white; border-radius: 10px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
+        .warning-icon { font-size: 64px; color: #dc3545; margin-bottom: 20px; }
+        .niveau-info { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left; }
+        .niveau-info p { margin: 10px 0; }
+        .niveau-info strong { color: #2c3e50; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; text-decoration: none; display: inline-block; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-trash"></i> Supprimer un Niveau</h1>
+        </div>
+        <div class="confirm-container">
+            <i class="fas fa-exclamation-triangle warning-icon"></i>
+            <h2>Êtes-vous sûr de vouloir supprimer ce niveau ?</h2>
+            <p>Cette action est irréversible.</p>
+            
+            <div class="niveau-info">
+                <p><strong>Nom :</strong> {{ niveau.nom }}</p>
+                <p><strong>Filière :</strong> {{ niveau.filiere.nom }}</p>
+                <p><strong>Description :</strong> {{ niveau.description|default:"Non renseignée" }}</p>
+            </div>
+            
+            <form method="post" class="btn-group">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Confirmer la suppression</button>
+                <a href="{% url 'public:list_niveaux_by_filiere' niveau.filiere.id %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Annuler</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

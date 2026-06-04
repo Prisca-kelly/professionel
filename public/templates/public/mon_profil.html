@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .profile-container { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .profile-header { display: grid; grid-template-columns: 120px 1fr; gap: 25px; margin-bottom: 40px; }
+        .avatar { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 50px; color: white; }
+        .user-info h2 { font-size: 24px; color: #2c3e50; margin-bottom: 5px; }
+        .user-info p { color: #6c757d; font-size: 14px; }
+        .role-badge { display: inline-block; background: #667eea; color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; margin-top: 10px; }
+        .form-section { border-top: 2px solid #e9ecef; padding-top: 30px; }
+        .form-section h3 { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #2c3e50; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
+        input[type="text"], input[type="email"], input[type="file"], select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; font-size: 14px; }
+        input[type="text"]:focus, input[type="email"]:focus, select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 5px rgba(102, 126, 234, 0.3); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .btn { padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; color: white; display: inline-block; font-weight: 600; transition: all 0.3s; }
+        .btn-primary { background: #667eea; }
+        .btn-secondary { background: #6c757d; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-secondary:hover { background: #5a6268; }
+        .success-msg { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .success-msg i { margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-user-circle"></i> Mon Profil</h1>
+        </div>
+        
+        {% if message %}
+            <div class="success-msg">
+                <i class="fas fa-check-circle"></i>
+                {{ message }}
+            </div>
+        {% endif %}
+        
+        <div class="profile-container">
+            <!-- Profil utilisateur -->
+            <div class="profile-header">
+                <div class="avatar">
+                    {{ user.first_name|default:'U'|first|upper }}
+                </div>
+                <div class="user-info">
+                    <h2>{{ user.get_full_name|default:user.username }}</h2>
+                    <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
+                    <p><i class="fas fa-user-tag"></i> Nom d'utilisateur: <strong>{{ user.username }}</strong></p>
+                    {% if admin_profile %}
+                        {% if admin_profile.role == 'ADMIN-PRINCIPAL' %}
+                            <span class="role-badge"><i class="fas fa-crown"></i> Administrateur Principal</span>
+                        {% else %}
+                            <span class="role-badge"><i class="fas fa-user-shield"></i> Sous-Administrateur</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Formulaire d'édition -->
+            <form method="POST" class="form-section">
+                {% csrf_token %}
+                
+                <h3><i class="fas fa-edit"></i> Modifier mes informations</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first_name">Prénom</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Nom</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}">
+                </div>
+                
+                <div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Enregistrer les modifications</button>
+                    <a href="{% url 'public:parametres' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Retour aux paramètres</a>
+                </div>
+            </form>
+            
+            <!-- Informations supplémentaires -->
+            <div class="form-section">
+                <h3><i class="fas fa-info-circle"></i> Informations du compte</h3>
+                <div style="display: grid; gap: 15px; font-size: 14px;">
+                    <p><strong>Compte créé le:</strong> {{ user.date_joined|date:"d/m/Y à H:i" }}</p>
+                    <p><strong>Dernière connexion:</strong> {% if user.last_login %}{{ user.last_login|date:"d/m/Y à H:i" }}{% else %}Jamais{% endif %}</p>
+                    <p><strong>Statut:</strong> {% if user.is_active %}<span style="color: #28a745;"><i class="fas fa-check-circle"></i> Actif</span>{% else %}<span style="color: #dc3545;"><i class="fas fa-times-circle"></i> Inactif</span>{% endif %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres Sous-Admin</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background: #f4f6f9;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+            background: #667eea;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .info {
+            background: #e8f0ff;
+            padding: 10px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 10px;
+            color: #667eea;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1><i class="fas fa-cog"></i> Paramètres Sous-Admin</h1>
+        <p>Centre : {{ centre.nom }}</p>
+    </div>
+
+    {% if error %}
+        <div class="info" style="background:#ffe6e6;border-left-color:red;">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    {% if message %}
+        <div class="info">
+            {{ message }}
+        </div>
+    {% endif %}
+
+    <!-- ================= PROFIL ================= -->
+    <div class="card">
+        <h3><i class="fas fa-user"></i> Mon Profil</h3>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_profile">
+
+            <label class="label">Prénom</label>
+            <input type="text" name="first_name" value="{{ user.first_name }}">
+
+            <label class="label">Nom</label>
+            <input type="text" name="last_name" value="{{ user.last_name }}">
+
+            <label class="label">Email</label>
+            <input type="email" name="email" value="{{ user.email }}">
+
+            <label class="label">Téléphone</label>
+            <input type="text" name="telephone" value="{{ admin_profile.telephone }}">
+
+            <button class="btn">
+                <i class="fas fa-save"></i> Enregistrer
+            </button>
+        </form>
+    </div>
+
+    <!-- ================= MOT DE PASSE ================= -->
+    <div class="card">
+        <h3><i class="fas fa-lock"></i> Mot de passe</h3>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="change_password">
+
+            <label class="label">Ancien mot de passe</label>
+            <input type="password" name="old_password">
+
+            <label class="label">Nouveau mot de passe</label>
+            <input type="password" name="new_password">
+
+            <label class="label">Confirmer</label>
+            <input type="password" name="confirm_password">
+
+            <button class="btn">
+                <i class="fas fa-key"></i> Modifier
+            </button>
+        </form>
+    </div>
+
+    <!-- ================= INFO CENTRE ================= -->
+    <div class="card">
+        <h3><i class="fas fa-building"></i> Centre</h3>
+
+        <div class="info">
+            <p><strong>Nom :</strong> {{ centre.nom }}</p>
+            <p><strong>Ville :</strong> {{ centre.ville.nom }}</p>
+            <p><strong>Email :</strong> {{ centre.email }}</p>
+            <p><strong>Téléphone :</strong> {{ centre.telephone }}</p>
+        </div>
+    </div>
+
+    <a href="{% url 'public:dashboard' %}" class="back">
+        <i class="fas fa-arrow-left"></i> Retour au dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

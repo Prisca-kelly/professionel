@@ -1,0 +1,1334 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - Ministère de l'Enseignement Professionnel du Gabon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'public/css/style_original.css' %}">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-white text-gray-800">
+    <!-- Page Loader -->
+    <div x-data="{ 
+        loading: true,
+        init() {
+            setTimeout(() => {
+                this.loading = false;
+            }, 1000);
+        }
+    }" x-show="loading" x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-500"></div>
+    </div>
+
+    <!-- Navigation -->
+    {% include 'public/includes/home.html' %}
+    
+    <!-- Mobile Menu -->
+    {% include 'public/includes/mobile_menu.html' %}
+
+    <!-- Messages Django -->
+    {% if messages %}
+        <div class="fixed top-20 right-4 z-50 space-y-2">
+            {% for message in messages %}
+                <div x-data="{ show: true }" 
+                     x-show="show" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 transform translate-x-full"
+                     x-transition:enter-end="opacity-100 transform translate-x-0"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 transform translate-x-0"
+                     x-transition:leave-end="opacity-0 transform translate-x-full"
+                     class="p-4 rounded-lg shadow-lg {% if message.tags == 'success' %}bg-green-100 text-green-800 border border-green-200{% elif message.tags == 'error' %}bg-red-100 text-red-800 border border-red-200{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-800 border border-yellow-200{% else %}bg-blue-100 text-blue-800 border border-blue-200{% endif %}">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            {% if message.tags == 'success' %}
+                                <i class="fas fa-check-circle text-green-500"></i>
+                            {% elif message.tags == 'error' %}
+                                <i class="fas fa-exclamation-circle text-red-500"></i>
+                            {% elif message.tags == 'warning' %}
+                                <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle text-blue-500"></i>
+                            {% endif %}
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium">{{ message }}</p>
+                        </div>
+                        <div class="ml-auto pl-3">
+                            <button @click="show = false" class="inline-flex text-gray-400 hover:text-gray-500 focus:outline-none">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        <!-- Pro info modal + floating trigger -->
+        <div x-data="{ 
+            open: true,
+            init() {
+                // Afficher le modal après un court délai au chargement
+                setTimeout(() => {
+                    this.open = true;
+                }, 1500);
+            },
+            openModal() {
+                this.open = true;
+            },
+            closeModal() {
+                this.open = false;
+            }
+        }" class="relative">
+            <!-- Floating button (always visible) -->
+            <button
+                type="button"
+                data-skip-global-hoverfx
+                @click="openModal()"
+                class="fixed left-4 top-1/2 -translate-y-1/2 z-40 group flex items-center rounded-full bg-white/90 backdrop-blur-md border border-gray-200 shadow-xl px-2 py-2 transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-105 animate-slide-in-left"
+                style="animation-delay: 0.15s"
+                aria-label="Ouvrir la définition de l'enseignement professionnel"
+            >
+                <span class="grid place-items-center w-10 h-10 rounded-full bg-gradient-to-br from-green-700 to-blue-600 text-white shadow-md transition-all duration-300 group-hover:shadow-[0_0_22px_rgba(27,94,32,0.45)]">
+                    ?
+                </span>
+                <span class="max-w-0 opacity-0 translate-x-[-4px] overflow-hidden whitespace-nowrap text-sm font-bold text-gray-800 transition-all duration-300 ease-in-out group-hover:max-w-[280px] group-hover:opacity-100 group-hover:translate-x-0">
+                    <span class="pl-3 pr-2">Qu'est-ce que l'enseignement pro ?</span>
+                </span>
+            </button>
+
+            <!-- Modal -->
+            <div
+                x-show="open"
+                x-transition.opacity.duration.220ms
+                class="fixed inset-0 z-50"
+                @keydown.window.escape="closeModal()"
+                aria-modal="true"
+                role="dialog"
+            >
+                <!-- Backdrop (blur) -->
+                <div
+                    class="absolute inset-0 bg-black/45 backdrop-blur-sm"
+                    @click="closeModal()"
+                    x-transition.opacity.duration.220ms
+                ></div>
+
+                <!-- Panel -->
+                <div class="relative h-full w-full flex items-center justify-center p-4">
+                    <div
+                        @click.stop
+                        x-show="open"
+                        x-transition:enter="transition ease-in-out duration-250"
+                        x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                        x-transition:leave="transition ease-in-out duration-200"
+                        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 scale-95 translate-y-2"
+                        class="w-full max-w-xl rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden"
+                    >
+                        <div class="px-6 py-5 sm:px-8 sm:py-7">
+                            <div class="flex items-start justify-between gap-6">
+                                <div>
+                                    <p class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-green-800 bg-green-50 border border-green-100 rounded-full px-3 py-1">
+                                        Information
+                                    </p>
+                                    <h2 class="mt-3 text-2xl sm:text-3xl font-bold text-gray-900">
+                                        Qu'est-ce que l'enseignement professionnel ?
+                                    </h2>
+                                </div>
+                                <button
+                                    type="button"
+                                    data-skip-global-hoverfx
+                                    class="shrink-0 w-10 h-10 rounded-full border border-gray-200 grid place-items-center text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200"
+                                    @click="closeModal()"
+                                    aria-label="Fermer"
+                                >
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <p class="mt-4 text-gray-700 leading-relaxed">
+                                L'enseignement professionnel au Gabon regroupe toutes les formations qui préparent directement à un métier.
+                                Contrairement à l'enseignement général, il permet d'acquérir :
+                            </p>
+                            <ul class="mt-3 space-y-2 text-gray-700">
+                                <li class="flex items-start">
+                                    <span class="text-green-600 mr-2">✓</span>
+                                    <span>un savoir-faire pratique</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-600 mr-2">✓</span>
+                                    <span>un métier précis</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-600 mr-2">✓</span>
+                                    <span>des compétences immédiatement utilisables dans le monde du travail</span>
+                                </li>
+                            </ul>
+
+                            <div class="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
+                                <button
+                                    type="button"
+                                    data-skip-global-hoverfx
+                                    class="inline-flex justify-center items-center rounded-xl bg-green-700 text-white font-bold px-5 py-3 shadow-lg hover:bg-green-800 transition-all duration-300 ease-in-out transform hover:scale-105"
+                                    @click="closeModal()"
+                                >
+                                    Fermer
+                                </button>
+                                <button
+                                    type="button"
+                                    data-skip-global-hoverfx
+                                    class="inline-flex justify-center items-center rounded-xl border border-gray-200 bg-white text-gray-800 font-bold px-5 py-3 hover:bg-gray-50 transition-all duration-300 ease-in-out hover:scale-[1.02]"
+                                    @click="closeModal(); document.getElementById('ministere')?.scrollIntoView({ behavior: 'smooth' })"
+                                >
+                                    Découvrir nos actions
+                                </button>
+                            </div>
+                        </div>
+                        <div class="h-2 bg-gradient-to-r from-green-700 via-yellow-500 to-blue-600"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Hero Section avec Carousel -->
+        {% include 'public/includes/hero_section.html' %}
+
+        <!-- Section Ministère -->
+        {% include 'public/includes/ministry_section.html' %}
+
+        <!-- Section Ministre -->
+        {% include 'public/includes/minister_section.html' %}
+
+        <!-- Section Contact -->
+        {% include 'public/includes/contact_section.html' %}
+
+        <!-- Section Actualités -->
+        {% include 'public/includes/actualites_section.html' %}
+
+    </main>
+
+    <!-- Footer -->
+    {% include 'public/includes/footer.html' %}
+
+    <!-- Scripts JavaScript pour les fonctionnalités interactives -->
+    <script>
+    document.addEventListener('alpine:init', () => {
+        // Navbar Component
+        Alpine.data('navbar', () => ({
+            open: false,
+            scrolled: false,
+            provincesOpen: false,
+            selectedProvince: null,
+            selectedCity: null,
+            provinces: [],
+            cities: [],
+            centers: [],
+            loading: false,
+            init() {
+                this.loadProvinces();
+            },
+            async loadProvinces() {
+                try {
+                    const response = await fetch('/api/provinces/');
+                    const data = await response.json();
+                    if (data.success) {
+                        this.provinces = data.data;
+                    }
+                } catch (error) {
+                    console.error('Error loading provinces:', error);
+                }
+            },
+            async loadCities(provinceId) {
+                if (!provinceId) {
+                    this.cities = [];
+                    this.centers = [];
+                    return;
+                }
+                this.loading = true;
+                try {
+                    const response = await fetch(`/api/villes/${provinceId}/`);
+                    const data = await response.json();
+                    if (data.success) {
+                        this.cities = data.data;
+                    }
+                } catch (error) {
+                    console.error('Error loading cities:', error);
+                } finally {
+                    this.loading = false;
+                }
+            },
+            async loadCenters(provinceId) {
+                if (!provinceId) {
+                    this.centers = [];
+                    return;
+                }
+                this.loading = true;
+                try {
+                    const response = await fetch(`/api/centres/${provinceId}/`);
+                    const data = await response.json();
+                    if (data.success) {
+                        this.centers = data.data;
+                    }
+                } catch (error) {
+                    console.error('Error loading centers:', error);
+                } finally {
+                    this.loading = false;
+                }
+            },
+            selectProvince(provinceName) {
+                this.selectedProvince = provinceName;
+                this.selectedCity = null;
+                const province = this.provinces.find(p => p.name === provinceName);
+                if (province) {
+                    this.loadCities(province.id);
+                    this.loadCenters(province.id);
+                }
+            },
+            selectCity(cityName) {
+                this.selectedCity = cityName;
+                // Charger les centres spécifiques à la ville sélectionnée
+                const selectedProvince = this.provinces.find(p => p.name === this.selectedProvince);
+                if (selectedProvince) {
+                    const selectedCityObj = this.cities.find(c => c.name === cityName);
+                    if (selectedCityObj) {
+                        this.loadCentersForCity(selectedProvince.id, selectedCityObj.id);
+                    }
+                }
+            },
+            async loadCentersForCity(provinceId, cityId) {
+                if (!provinceId || !cityId) {
+                    this.centers = [];
+                    return;
+                }
+                this.loading = true;
+                try {
+                    const response = await fetch(`/api/centres/${provinceId}/`);
+                    const data = await response.json();
+                    if (data.success) {
+                        // Filtrer les centres pour la ville spécifique
+                        this.centers = data.data.filter(center => {
+                            // Vérifier si le centre appartient à cette ville
+                            return center.ville === this.selectedCity;
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading centers for city:', error);
+                } finally {
+                    this.loading = false;
+                }
+            },
+            toggleProvinces() {
+                this.provincesOpen = !this.provincesOpen;
+            },
+            resetSelection() {
+                this.selectedProvince = null;
+                this.selectedCity = null;
+                this.cities = [];
+                this.centers = [];
+            },
+            goToCenter(center) {
+                const centerName = typeof center === 'string' ? center : (center.name || 'Centre sans nom');
+                alert(`Centre sélectionné: ${centerName}`);
+                this.provincesOpen = false;
+            }
+        }));
+
+        // Advanced Search Component
+        Alpine.data('advancedSearch', () => ({
+            query: '',
+            results: [],
+            showResults: false,
+            selectedIndex: -1,
+            isLoading: false,
+            allData: [],
+            init() {
+                // Charger toutes les données pour la recherche
+                this.loadAllData();
+            },
+            async loadAllData() {
+                try {
+                    const provincesResponse = await fetch('/api/provinces/');
+                    const provincesData = await provincesResponse.json();
+                    
+                    if (provincesData.success) {
+                        this.allData = provincesData.data.flatMap(province => [
+                            { 
+                                name: province.name, 
+                                category: 'Province', 
+                                icon: '🗺️', 
+                                type: 'province',
+                                id: province.id,
+                                specialty: `${province.cities?.length || 0} villes`
+                            },
+                            ...(province.cities || []).map(city => ({
+                                name: city.name,
+                                category: 'Ville',
+                                icon: '🏙️',
+                                type: 'city',
+                                province: province.name,
+                                specialty: province.name
+                            })),
+                            ...(province.centers || []).map(center => ({
+                                name: center.name,
+                                category: 'Centre de formation',
+                                icon: '🎓',
+                                type: 'center',
+                                province: province.name,
+                                specialty: center.type || 'Formation professionnelle'
+                            }))
+                        ]);
+                    }
+                } catch (error) {
+                    console.error('Error loading search data:', error);
+                }
+            },
+            handleKeydown(event) {
+                if (event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    this.selectedIndex = Math.min(this.selectedIndex + 1, this.results.length - 1);
+                } else if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
+                } else if (event.key === 'Enter') {
+                    event.preventDefault();
+                    if (this.selectedIndex >= 0 && this.results[this.selectedIndex]) {
+                        this.selectResult(this.results[this.selectedIndex]);
+                    }
+                } else if (event.key === 'Escape') {
+                    this.showResults = false;
+                    this.selectedIndex = -1;
+                }
+            },
+            async search() {
+                if (!this.query.trim()) {
+                    this.results = [];
+                    this.showResults = false;
+                    return;
+                }
+                
+                this.isLoading = true;
+                this.selectedIndex = -1;
+                
+                // Simuler une recherche avec délai pour l'effet de chargement
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                const searchTerm = this.query.toLowerCase();
+                this.results = this.allData.filter(item => 
+                    item.name.toLowerCase().includes(searchTerm) ||
+                    item.category.toLowerCase().includes(searchTerm) ||
+                    (item.specialty && item.specialty.toLowerCase().includes(searchTerm))
+                ).slice(0, 8); // Limiter à 8 résultats
+                
+                this.showResults = true;
+                this.isLoading = false;
+            },
+            selectResult(result) {
+                // Action quand un résultat est sélectionné
+                console.log('Selected:', result);
+                
+                // Naviguer vers la section appropriée
+                if (result.type === 'province') {
+                    // Scroller vers la section des provinces et sélectionner
+                    document.getElementById('ministere')?.scrollIntoView({ behavior: 'smooth' });
+                    // Déclencher la sélection dans la navbar
+                    setTimeout(() => {
+                        const navbar = Alpine.$data(document.querySelector('nav'));
+                        if (navbar && navbar.selectProvince) {
+                            navbar.selectProvince(result.name);
+                        }
+                    }, 500);
+                } else if (result.type === 'city') {
+                    document.getElementById('ministere')?.scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(() => {
+                        const navbar = Alpine.$data(document.querySelector('nav'));
+                        if (navbar && navbar.selectProvince) {
+                            navbar.selectProvince(result.province);
+                            setTimeout(() => {
+                                if (navbar.selectCity) {
+                                    navbar.selectCity(result.name);
+                                }
+                            }, 300);
+                        }
+                    }, 500);
+                } else if (result.type === 'center') {
+                    alert(`Centre: ${result.name}\nProvince: ${result.province}\nSpécialité: ${result.specialty}`);
+                }
+                
+                this.showResults = false;
+                this.query = '';
+                this.selectedIndex = -1;
+            }
+        }));
+
+        // Hero Carousel Component
+        Alpine.data('heroCarousel', () => ({
+            active: 0,
+            slides: [
+                {
+                    title: "Excellence en Formation Professionnelle",
+                    subtitle: "Préparez votre avenir avec des formations de qualité adaptées aux besoins du marché",
+                    eyebrow: "Bienvenue au Ministère",
+                    overlay: "from-green-900/90 to-blue-900/90",
+                    image: "{% static 'public/images/opt.jpg' %}",
+                    ctaPrimary: { label: "Explorer nos formations", href: "#diplomes" },
+                    ctaSecondary: { label: "Découvrir le ministère", href: "#ministre" }
+                },
+                {
+                    title: "Innovation et Technologie",
+                    subtitle: "Intégrez les compétences numériques indispensables pour l'emploi de demain",
+                    eyebrow: "Formation Numérique",
+                    overlay: "from-blue-900/90 to-purple-900/90",
+                    image: "{% static 'public/images/1l.jpg' %}",
+                    ctaPrimary: { label: "Filières numériques", href: "#filières" },
+                    ctaSecondary: { label: "Centres de formation", href: "#contact" }
+                },
+                {
+                    title: "Développement Durable",
+                    subtitle: "Contribuez à un Gabon vert avec nos formations environnementales",
+                    eyebrow: "Écologie et Innovation",
+                    overlay: "from-green-900/90 to-teal-900/90",
+                    image: "{% static 'public/images/6.jpeg' %}",
+                    ctaPrimary: { label: "Filières vertes", href: "#filières" },
+                    ctaSecondary: { label: "Nous contacter", href: "#contact" }
+                }
+            ],
+            interval: null,
+            init() {
+                this.start();
+            },
+            start() {
+                this.interval = setInterval(() => this.next(), 5000);
+            },
+            stop() {
+                clearInterval(this.interval);
+            },
+            next() {
+                this.active = (this.active + 1) % this.slides.length;
+            },
+            prev() {
+                this.active = (this.active - 1 + this.slides.length) % this.slides.length;
+            },
+            goTo(index) {
+                this.active = index;
+            }
+        }));
+
+        // Search Component
+        Alpine.data('search', () => ({
+            query: '',
+            selectedProvince: null,
+            selectedCity: null,
+            selectedCenter: null,
+            provinces: [],
+            cities: [],
+            centers: [],
+            loading: false,
+            results: [],
+            async init() {
+                await this.loadProvinces();
+            },
+            async loadProvinces() {
+                try {
+                    const response = await fetch('/api/provinces/');
+                    const data = await response.json();
+                    if (data.success) {
+                        this.provinces = data.data;
+                    }
+                } catch (error) {
+                    console.error('Error loading provinces:', error);
+                }
+            },
+            async loadCities(provinceId) {
+                if (!provinceId) {
+                    this.cities = [];
+                    return;
+                }
+                this.loading = true;
+                try {
+                    const response = await fetch(`/api/villes/${provinceId}/`);
+                    const data = await response.json();
+                    if (data.success) {
+                        this.cities = data.data;
+                    }
+                } catch (error) {
+                    console.error('Error loading cities:', error);
+                } finally {
+                    this.loading = false;
+                }
+            },
+            async loadCenters(provinceId) {
+                if (!provinceId) {
+                    this.centers = [];
+                    return;
+                }
+                this.loading = true;
+                try {
+                    const response = await fetch(`/api/centres/${provinceId}/`);
+                    const data = await response.json();
+                    if (data.success) {
+                        this.centers = data.data;
+                    }
+                } catch (error) {
+                    console.error('Error loading centers:', error);
+                } finally {
+                    this.loading = false;
+                }
+            },
+            async search() {
+                if (!this.query.trim()) {
+                    this.results = [];
+                    return;
+                }
+                this.loading = true;
+                try {
+                    // Simuler une recherche - en production, utiliser une vraie API
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    this.results = this.centers.filter(center => 
+                        center.name.toLowerCase().includes(this.query.toLowerCase()) ||
+                        center.type.toLowerCase().includes(this.query.toLowerCase())
+                    );
+                } catch (error) {
+                    console.error('Error searching:', error);
+                } finally {
+                    this.loading = false;
+                }
+            }
+        }));
+
+        // Stats Counter Component
+        Alpine.data('stats', () => ({
+            stats: [
+                { number: 50, label: "Centres de Formation", suffix: "+" },
+                { number: 15000, label: "Étudiants par An", suffix: "+" },
+                { number: 200, label: "Programmes de Formation", suffix: "+" },
+                { number: 85, label: "Taux d'Insertion", suffix: "%" }
+            ],
+            init() {
+                this.animateCounters();
+            },
+            animateCounters() {
+                this.stats.forEach((stat, index) => {
+                    setTimeout(() => {
+                        this.animateCounter(stat);
+                    }, index * 200);
+                });
+            },
+            animateCounter(stat) {
+                let current = 0;
+                const increment = stat.number / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= stat.number) {
+                        current = stat.number;
+                        clearInterval(timer);
+                    }
+                    stat.current = Math.floor(current);
+                }, 30);
+            }
+        }));
+    });
+
+    // Animations de défilement
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-fadeInUp');
+            }
+        });
+    }, observerOptions);
+
+    // Observer tous les éléments avec l'attribut data-animate
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-animate]').forEach(el => {
+            observer.observe(el);
+        });
+    });
+
+    // Animation du footer au scroll
+    window.addEventListener('scroll', () => {
+        const footer = document.querySelector('footer');
+        if (footer) {
+            const scrollPosition = window.scrollY + window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
+            if (scrollPosition >= documentHeight - 100) {
+                footer.classList.add('animate-fadeInUp');
+            }
+        }
+    });
+
+    // Effet parallaxe sur les images
+    window.addEventListener('scroll', () => {
+        const parallaxImages = document.querySelectorAll('.parallax-image');
+        parallaxImages.forEach(img => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            img.style.transform = `translateY(${rate}px)`;
+        });
+    });
+
+    // Animation des statistiques au scroll
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                const counters = entry.target.querySelectorAll('.counter');
+                counters.forEach(counter => {
+                    const target = parseInt(counter.getAttribute('data-target'));
+                    let current = 0;
+                    const increment = target / 100;
+                    
+                    const updateCounter = () => {
+                        current += increment;
+                        if (current < target) {
+                            counter.textContent = Math.ceil(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = target + counter.getAttribute('data-suffix');
+                        }
+                    };
+                    
+                    updateCounter();
+                });
+                entry.target.classList.add('animated');
+            }
+        });
+    }, { threshold: 0.5 });
+
+    // Observer les sections de statistiques
+    document.addEventListener('DOMContentLoaded', () => {
+        const statsSections = document.querySelectorAll('.stats-section');
+        statsSections.forEach(section => {
+            statsObserver.observe(section);
+        });
+    });
+    </script>
+
+    <style>
+    /* Animations personnalisées pour l'accueil */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fadeInUp {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Stagger animations */
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .stagger-6 { animation-delay: 0.6s; }
+
+    /* Animation du carousel */
+    .carousel-slide {
+        transition: all 0.5s ease-in-out;
+    }
+
+    .carousel-slide.active {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .carousel-slide:not(.active) {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    /* Animation des cartes au hover */
+    .feature-card {
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Animation du loader */
+    .page-loader {
+        transition: opacity 0.3s ease-out;
+    }
+
+    /* Animation des boutons */
+    .btn-primary {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-primary:hover::before {
+        left: 100%;
+    }
+
+    /* Animation des sections au scroll */
+    .scroll-animate {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease-out;
+    }
+
+    .scroll-animate.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Animation des compteurs */
+    .counter {
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+        }
+        
+        .feature-card {
+            margin-bottom: 2rem;
+        }
+    }
+
+    /* Footer animations */
+    .footer-animate {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-out;
+    }
+
+    .footer-animate.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Animation des liens du footer */
+    .footer-link {
+        position: relative;
+        transition: color 0.3s ease;
+    }
+
+    .footer-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #16a34a, #2563eb);
+        transition: width 0.3s ease;
+    }
+
+    .footer-link:hover::after {
+        width: 100%;
+    }
+
+    /* Animation des réseaux sociaux */
+    .social-icon {
+        transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-3px) scale(1.1);
+    }
+
+    /* Animation des badges */
+    .badge-animate {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    /* Animation des sections de contenu */
+    .content-section {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.8s ease-out;
+    }
+
+    .content-section.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Animation des images de profil */
+    .profile-image {
+        transition: all 0.3s ease;
+    }
+
+    .profile-image:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Animation des citations */
+    .quote-animate {
+        opacity: 0;
+        transform: translateX(-30px);
+        transition: all 0.6s ease-out;
+    }
+
+    .quote-animate.visible {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* Animation des statistiques */
+    .stats-section {
+        opacity: 0;
+        transform: scale(0.9);
+        transition: all 0.6s ease-out;
+    }
+
+    .stats-section.visible {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* Animation des boutons CTA */
+    .cta-button {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .cta-button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .cta-button:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    </style>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+
+    <!-- JavaScript pour la carte interactive -->
+    <script>
+    let map = null;
+    let markers = [];
+
+    // Fonction pour afficher/masquer la carte
+    function toggleMap() {
+        const mapSection = document.getElementById('map-section');
+        const toggleBtn = document.getElementById('toggle-map-btn');
+        
+        if (mapSection.classList.contains('hidden')) {
+            mapSection.classList.remove('hidden');
+            toggleBtn.textContent = '🗺️ Masquer la Carte Interactive';
+            toggleBtn.classList.remove('bg-green-700', 'hover:bg-green-800');
+            toggleBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+            
+            // Initialiser la carte si nécessaire
+            if (!map) {
+                initGabonMap();
+            } else {
+                // Redimensionner la carte existante
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 100);
+            }
+        } else {
+            mapSection.classList.add('hidden');
+            toggleBtn.textContent = '🗺️ Afficher la Carte Interactive';
+            toggleBtn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+            toggleBtn.classList.add('bg-green-700', 'hover:bg-green-800');
+        }
+    }
+
+    // Fonction pour initialiser la carte du Gabon avec Leaflet
+    function initGabonMap() {
+        const mapContainer = document.getElementById('gabon-map');
+        if (!mapContainer) return;
+
+        // Initialiser la carte centrée sur le Gabon
+        map = L.map('gabon-map').setView([-1.5, 11.5], 6);
+
+        // Ajouter la couche de tuiles OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18,
+        }).addTo(map);
+
+        // Récupérer les provinces depuis la base de données via l'API
+        fetch('/api/provinces/')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Données API reçues:', data);
+                console.log('Nombre de provinces:', data.data ? data.data.length : 0);
+                if (data.data && data.data.length > 0) {
+                    console.log('Première province:', data.data[0]);
+                    console.log('Centres de la première province:', data.data[0].centers);
+                }
+                
+                if (data.success) {
+                    addProvinceMarkers(data.data);
+                } else {
+                    console.error('Erreur lors de la récupération des provinces:', data);
+                    // En cas d'erreur, utiliser les données de secours
+                    addFallbackMarkers();
+                }
+            })
+            .catch(error => {
+                console.error('Erreur API:', error);
+                // En cas d'erreur réseau, utiliser les données de secours
+                addFallbackMarkers();
+            });
+    }
+
+    // Fonction pour ajouter les marqueurs de provinces depuis les données API
+    function addProvinceMarkers(provinces) {
+        const colors = ['#10b981', '#3b82f6', '#eab308', '#8b5cf6', '#ef4444', '#6366f1', '#ec4899', '#14b8a6', '#f97316'];
+        
+        provinces.forEach((province, index) => {
+            // Coordonnées par défaut si non spécifiées dans la base de données
+            const defaultCoords = {
+                'Estuaire': [0.3924, 9.4447],
+                'Haut-Ogooué': [-1.6333, 13.5833],
+                'Moyen-Ogooué': [-0.7000, 10.2333],
+                'Ngounié': [-1.8667, 11.0500],
+                'Nyanga': [-3.3500, 11.0500],
+                'Ogooué-Ivindo': [2.8333, 12.8667],
+                'Ogooué-Lolo': [-1.1333, 12.9833],
+                'Ogooué-Maritime': [-0.7167, 8.7833],
+                'Woleu-Ntem': [2.0000, 11.5833]
+            };
+            
+            const coords = province.coords || defaultCoords[province.name] || [-1.5, 11.5];
+            const color = colors[index % colors.length];
+            
+            console.log(`Création marqueur pour ${province.name} à coords: [${coords[0]}, ${coords[1]}]`);
+            
+            // Créer une icône personnalisée plus visible pour les provinces
+            const provinceIcon = L.divIcon({
+                html: `
+                    <div style="
+                        background-color: ${color};
+                        width: 35px;
+                        height: 35px;
+                        border-radius: 50%;
+                        border: 3px solid white;
+                        box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                        color: white;
+                        font-size: 14px;
+                        z-index: 1000;
+                        position: relative;
+                    ">
+                        ${index + 1}
+                    </div>
+                `,
+                className: 'province-marker',
+                iconSize: [35, 35],
+                iconAnchor: [17, 17],
+                popupAnchor: [0, -20]
+            });
+            
+            const marker = L.marker(coords, { 
+                icon: provinceIcon,
+                title: province.name,
+                zIndexOffset: 1000
+            }).addTo(map);
+            
+            console.log(`Marqueur créé pour ${province.name} avec succès`);
+            
+            // Organiser les centres par ville selon la nouvelle structure de la base de données
+            const centersByCity = {};
+            if (province.centers && Array.isArray(province.centers)) {
+                console.log('Centres pour province', province.name, ':', province.centers);
+                province.centers.forEach(center => {
+                    const cityName = center.ville || 'Non spécifiée';
+                    const centerName = center.name || 'Centre sans nom';
+                    console.log('Centre trouvé:', centerName, 'à', cityName);
+                    
+                    if (!centersByCity[cityName]) {
+                        centersByCity[cityName] = [];
+                    }
+                    centersByCity[cityName].push(centerName);
+                });
+                console.log('Centres organisés par ville:', centersByCity);
+            }
+            
+            // Créer le contenu du popup avec un style amélioré
+            let centersHtml = '';
+            if (Object.keys(centersByCity).length > 0) {
+                for (const [city, centers] of Object.entries(centersByCity)) {
+                    centersHtml += `
+                        <div class="mb-3 p-2 bg-gray-50 rounded-lg">
+                            <p class="text-sm font-bold text-blue-700 mb-2">🏙️ ${city} (${centers.length})</p>
+                            <ul class="text-xs text-gray-700 space-y-1 ml-3">
+                                ${centers.map(center => `<li class="flex items-start"><span class="text-green-500 mr-1">•</span><span>${center}</span></li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+            } else {
+                centersHtml = '<p class="text-xs text-gray-500 italic">Aucun centre de formation enregistré pour cette province</p>';
+            }
+
+            const popupContent = `
+                <div class="p-3 min-w-[250px] max-w-[300px]">
+                    <h4 class="font-bold text-lg mb-2" style="color: ${color}">${province.name}</h4>
+                    <p class="text-sm text-gray-600 mb-3">📍 Capitale: ${province.capital || 'Non spécifiée'}</p>
+                    <div class="border-t pt-3">
+                        <p class="text-sm font-semibold mb-2 text-gray-800">🎓 Centres de formation par ville:</p>
+                        ${centersHtml}
+                    </div>
+                </div>
+            `;
+            
+            marker.bindPopup(popupContent);
+            
+            // Ajouter un événement de clic pour afficher les détails dans le panneau latéral
+            marker.on('click', function() {
+                showProvinceDetailsFromAPI(province.name);
+            });
+            
+            markers.push(marker);
+        });
+
+        // Ajouter un cercle pour représenter les frontières approximatives du Gabon
+        L.circle([-1.5, 11.5], {
+            color: '#10b981',
+            fillColor: '#10b981',
+            fillOpacity: 0.1,
+            radius: 500000
+        }).addTo(map);
+    }
+
+    // Fonction de secours avec les données codées en dur
+    function addFallbackMarkers() {
+        const fallbackProvinces = [
+            {
+                name: 'Estuaire',
+                capital: 'Libreville',
+                coords: [0.3924, 9.4447],
+                cities: [
+                    {name: 'Libreville', centers: [{name: 'Centre de Formation Numérique'}, {name: 'Institut Professionnel'}]},
+                    {name: 'Owendo', centers: [{name: 'Lycée Technique Portuaire'}]},
+                    {name: 'Ntoum', centers: [{name: 'Centre Agricole'}]}
+                ]
+            },
+            {
+                name: 'Haut-Ogooué',
+                capital: 'Franceville',
+                coords: [-1.6333, 13.5833],
+                cities: [
+                    {name: 'Franceville', centers: [{name: 'Centre Minier'}, {name: 'École Technique Supérieure'}]},
+                    {name: 'Moanda', centers: [{name: 'Lycée Industriel Minier'}]},
+                    {name: 'Mounana', centers: [{name: 'Centre de Formation Uranium'}]}
+                ]
+            }
+            // Ajouter d'autres provinces si nécessaire...
+        ];
+        
+        addProvinceMarkers(fallbackProvinces);
+    }
+
+    // Fonction pour afficher les détails d'une province depuis l'API
+    function showProvinceDetailsFromAPI(provinceName) {
+        // Récupérer les détails de la province depuis l'API
+        fetch(`/api/provinces/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const province = data.data.find(p => p.name === provinceName);
+                    if (province) {
+                        displayProvinceDetails(province);
+                    } else {
+                        console.error('Province non trouvée:', provinceName);
+                        displayFallbackDetails(provinceName);
+                    }
+                } else {
+                    console.error('Erreur API:', data);
+                    displayFallbackDetails(provinceName);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur réseau:', error);
+                displayFallbackDetails(provinceName);
+            });
+    }
+
+    // Fonction pour afficher les détails de la province
+    function displayProvinceDetails(province) {
+        const listContainer = document.getElementById('province-cities-list');
+        
+        let citiesHtml = '';
+        let centersHtml = '';
+        
+        // Organiser les villes et centres selon la nouvelle structure de la base de données
+        if (province.cities && Array.isArray(province.cities)) {
+            citiesHtml = province.cities.map(city => `<li>• ${city.name || city}</li>`).join('');
+        }
+        
+        // Organiser les centres par ville selon la nouvelle structure
+        const centersByCity = {};
+        if (province.centers && Array.isArray(province.centers)) {
+            province.centers.forEach(center => {
+                const cityName = center.ville || 'Non spécifiée';
+                const centerName = center.name || 'Centre sans nom';
+                if (!centersByCity[cityName]) {
+                    centersByCity[cityName] = [];
+                }
+                centersByCity[cityName].push(centerName);
+            });
+        }
+        
+        for (const [city, centers] of Object.entries(centersByCity)) {
+            centersHtml += `
+                <div class="mb-3">
+                    <h6 class="font-semibold text-purple-700 mb-1">🏙️ ${city}:</h6>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                        ${centers.map(center => `<li>• ${center}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        listContainer.innerHTML = `
+            <div class="space-y-4">
+                <div class="bg-green-50 rounded-lg p-4">
+                    <h4 class="font-bold text-green-800 mb-2">📍 ${province.name}</h4>
+                    <p class="text-sm text-gray-600">Capitale: ${province.capital || 'Non spécifiée'}</p>
+                </div>
+                
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h5 class="font-bold text-blue-800 mb-2">🏙️ Villes principales</h5>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                        ${citiesHtml || '<li class="text-gray-500">Aucune ville enregistrée</li>'}
+                    </ul>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4">
+                    <h5 class="font-bold text-purple-800 mb-2">🎓 Centres de formation</h5>
+                    ${centersHtml || '<p class="text-sm text-gray-500">Aucun centre de formation enregistré</p>'}
+                </div>
+            </div>
+        `;
+    }
+
+    // Fonction de secours pour afficher les détails
+    function displayFallbackDetails(provinceName) {
+        const fallbackData = {
+            'Estuaire': {
+                capital: 'Libreville',
+                cities: ['Libreville', 'Owendo', 'Ntoum'],
+                centers: ['Centre de Formation Numérique', 'Lycée Technique', 'Institut Professionnel']
+            },
+            'Haut-Ogooué': {
+                capital: 'Franceville',
+                cities: ['Franceville', 'Moanda', 'Mounana'],
+                centers: ['Centre Minier', 'Lycée Industriel', 'École Technique']
+            }
+        };
+
+        const province = fallbackData[provinceName];
+        if (!province) return;
+
+        const listContainer = document.getElementById('province-cities-list');
+        listContainer.innerHTML = `
+            <div class="space-y-4">
+                <div class="bg-green-50 rounded-lg p-4">
+                    <h4 class="font-bold text-green-800 mb-2">📍 ${provinceName}</h4>
+                    <p class="text-sm text-gray-600">Capitale: ${province.capital}</p>
+                </div>
+                
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h5 class="font-bold text-blue-800 mb-2">🏙️ Villes principales</h5>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                        ${province.cities.map(city => `<li>• ${city}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4">
+                    <h5 class="font-bold text-purple-800 mb-2">🎓 Centres de formation</h5>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                        ${province.centers.map(center => `<li>• ${center}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+
+    // Fonction pour afficher les détails d'une province (ancienne fonction pour compatibilité)
+    function showProvinceDetails(provinceName) {
+        showProvinceDetailsFromAPI(provinceName);
+    }
+    </script>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+</body>
+</html>

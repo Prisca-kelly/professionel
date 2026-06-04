@@ -1,0 +1,94 @@
+{% load static %}
+<!-- Actualités et Articles Section -->
+<section id="actualites" class="py-20 px-4 bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-6 py-3 rounded-full text-sm font-bold mb-6 border border-blue-200">
+                <span class="w-3 h-3 rounded-full bg-blue-600 animate-pulse"></span>
+                Actualités et Articles
+            </div>
+            <h2 class="text-5xl font-bold text-gray-900 mb-6 bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+                Nos Actualités
+            </h2>
+            <div class="w-32 h-1 bg-gradient-to-r from-blue-500 to-green-500 mx-auto rounded-full"></div>
+            <p class="text-gray-600 mt-6 max-w-3xl mx-auto">
+                Restez informé des dernières nouvelles, initiatives et annonces du ministère
+            </p>
+        </div>
+
+        <!-- Articles Grid -->
+        {% if articles %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                {% for article in articles %}
+                    <article class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                        <!-- Article Header with Image Placeholder -->
+                        <div class="relative h-48 bg-gradient-to-br from-blue-500 to-green-500 overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-green-600 opacity-80"></div>
+                            <div class="absolute inset-0 flex items-center justify-center text-white">
+                                <div class="text-center">
+                                    <svg class="w-16 h-16 mx-auto mb-2 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+                                    </svg>
+                                    <p class="text-sm font-semibold opacity-75">Article</p>
+                                </div>
+                            </div>
+                            <!-- Date Badge -->
+                            <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 text-xs font-bold text-blue-600">
+                                {{ article.date_creation|date:"d M" }}
+                            </div>
+                        </div>
+
+                        <!-- Article Content -->
+                        <div class="p-6">
+                            <!-- Category -->
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">
+                                    Article
+                                </span>
+                            </div>
+
+                            <!-- Title -->
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2">
+                                {{ article.titre }}
+                            </h3>
+
+                            <!-- Excerpt -->
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">
+                                {{ article.contenu|truncatewords:30 }}
+                            </p>
+
+                            <!-- Footer with CTA -->
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                                <div class="text-xs text-gray-500">
+                                    📅 {{ article.date_creation|date:"j \a\o F Y" }}
+                                </div>
+                            </div>
+
+                            <!-- Attachment indicator -->
+                            {% if article.fichier %}
+                                <div class="mt-4 pt-4 border-t border-gray-200">
+                                    <a href="{{ article.fichier.url }}" download class="inline-flex items-center gap-2 text-green-600 font-semibold hover:text-green-700 transition-colors duration-300 text-sm">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                        </svg>
+                                        Télécharger le fichier
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-16 bg-white rounded-2xl shadow-lg">
+                <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                </svg>
+                <h3 class="text-2xl font-bold text-gray-700 mb-2">Pas d'actualités pour le moment</h3>
+                <p class="text-gray-500">Les articles seront disponibles prochainement.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>

@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supprimer un administrateur</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .content { background: white; border-radius: 10px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .warning-box { background: #fff3cd; border: 1px solid #ffc107; border-radius: 5px; padding: 15px; margin-bottom: 20px; }
+        .warning-box i { color: #ff9800; margin-right: 10px; }
+        .admin-info { background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .admin-info p { margin: 8px 0; }
+        .admin-info strong { color: #667eea; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; color: white; display: inline-block; margin-right: 10px; }
+        .btn-danger { background: #dc3545; }
+        .btn-secondary { background: #6c757d; }
+        .btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-trash"></i> Supprimer l'administrateur</h1>
+        </div>
+        <div class="content">
+            <div class="warning-box">
+                <i class="fas fa-exclamation-triangle"></i>
+                Êtes-vous sûr de vouloir supprimer cet administrateur ? Cette action est irréversible.
+            </div>
+            
+            <div class="admin-info">
+                <p><strong>Nom d'utilisateur:</strong> {{ admin.user.username }}</p>
+                <p><strong>Email:</strong> {{ admin.user.email }}</p>
+                <p><strong>Rôle:</strong> {% if admin.role == 'ADMIN-PRINCIPAL' %}Admin Principal{% else %}Sous-Admin{% endif %}</p>
+                {% if admin.centre %}
+                    <p><strong>Centre:</strong> {{ admin.centre.nom }}</p>
+                {% endif %}
+            </div>
+            
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Confirmer la suppression</button>
+                <a href="{% url 'public:list_administrateurs' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Annuler</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

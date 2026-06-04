@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professeurs - {{ module.nom }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .breadcrumb { margin-bottom: 20px; color: #6c757d; }
+        .breadcrumb a { color: #17a2b8; text-decoration: none; }
+        .card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end; }
+        @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } }
+        .form-group { margin-bottom: 0; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
+        select, input { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 14px; }
+        select:focus, input:focus { outline: none; border-color: #17a2b8; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
+        th { background: #f8f9fa; font-weight: 600; }
+        .btn { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; color: white; display: inline-block; font-size: 14px; }
+        .btn-secondary { background: #6c757d; }
+        .btn-edit { background: #ffc107; color: #000; }
+        .btn-add { background: #28a745; white-space: nowrap; }
+        .btn-unassign { background: #dc3545; padding: 6px 12px; font-size: 13px; }
+        .module-meta { color: rgba(255,255,255,0.9); margin-top: 8px; font-size: 14px; }
+        .messages { list-style: none; margin-bottom: 20px; }
+        .messages li { padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; }
+        .messages .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .messages .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .card-title { font-size: 18px; font-weight: 600; color: #2c3e50; margin-bottom: 15px; }
+        .centre-hint { font-size: 13px; color: #6c757d; margin-bottom: 15px; }
+        .actions-cell { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .inline-form { display: inline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{% url 'public:dashboard' %}">Tableau de bord</a> >
+            <a href="{% url 'public:list_centres' %}">Centres</a> >
+            <a href="{% url 'public:list_filieres_by_centre' module.niveau.filiere.centre.id %}">{{ module.niveau.filiere.centre.nom }}</a> >
+            <a href="{% url 'public:list_niveaux_by_filiere' module.niveau.filiere.id %}">{{ module.niveau.filiere.nom }}</a> >
+            <a href="{% url 'public:list_modules_by_niveau' module.niveau.id %}">{{ module.niveau.nom }}</a> >
+            {{ module.nom }}
+        </div>
+        <div class="header">
+            <h1><i class="fas fa-chalkboard-teacher"></i> Professeurs — {{ module.nom }}</h1>
+            <p class="module-meta">Code : {{ module.code }}</p>
+        </div>
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-user-plus"></i> Assigner un professeur</h2>
+            <p class="centre-hint">Professeurs du centre : <strong>{{ centre.nom }}</strong></p>
+            {% if professeurs %}
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="assign">
+                {% if back_param %}<input type="hidden" name="back" value="{{ back_param }}">{% endif %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="professeur">Professeur *</label>
+                        <select id="professeur" name="professeur" required>
+                            <option value="">— Choisir un professeur —</option>
+                            {% for professeur in professeurs %}
+                            <option value="{{ professeur.id }}">{{ professeur.prenom }} {{ professeur.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="annee_academique">Année académique *</label>
+                        <input type="text" id="annee_academique" name="annee_academique" value="{{ default_annee }}" placeholder="2025-2026" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-add"><i class="fas fa-plus"></i> Assigner</button>
+                    </div>
+                </div>
+            </form>
+            {% else %}
+            <p style="color: #6c757d;">Aucun professeur enregistré pour ce centre.
+                <a href="{% url 'public:create_professeur' %}">Ajouter un professeur</a>
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <a href="{{ back_url }}" class="btn btn-secondary" style="margin-bottom: 15px;">
+                <i class="fas fa-arrow-left"></i> {{ back_label }}
+            </a>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Centre</th>
+                        <th>Année académique</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assignation in assignations %}
+                    <tr>
+                        <td>{{ assignation.professeur.nom }}</td>
+                        <td>{{ assignation.professeur.prenom }}</td>
+                        <td>{{ assignation.professeur.email|default:"-" }}</td>
+                        <td>{{ assignation.professeur.telephone|default:"-" }}</td>
+                        <td>{{ assignation.professeur.centre.nom }}</td>
+                        <td>{{ assignation.annee_academique }}</td>
+                        <td class="actions-cell">
+                            <a href="{% url 'public:edit_professeur' assignation.professeur.id %}" class="btn btn-edit" title="Modifier le professeur">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form method="post" class="inline-form" onsubmit="return confirm('Retirer ce professeur du module ?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="unassign">
+                                <input type="hidden" name="assignation_id" value="{{ assignation.id }}">
+                                {% if back_param %}<input type="hidden" name="back" value="{{ back_param }}">{% endif %}
+                                <button type="submit" class="btn btn-unassign" title="Retirer du module">
+                                    <i class="fas fa-user-minus"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="text-align: center;">Aucun professeur assigné à ce module</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

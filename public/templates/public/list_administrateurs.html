@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Administrateurs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .table-container { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
+        th { background: #f8f9fa; font-weight: 600; }
+        .btn { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; color: white; display: inline-block; }
+        .btn-primary { background: #667eea; }
+        .btn-danger { background: #dc3545; }
+        .btn-add { background: #28a745; margin-bottom: 15px; }
+        .badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-admin { background: #667eea; color: white; }
+        .badge-sous-admin { background: #17a2b8; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-users"></i> Gestion des Administrateurs</h1>
+        </div>
+        <div class="table-container">
+            <a href="{% url 'public:create_administrateur' %}" class="btn btn-add"><i class="fas fa-plus"></i> Ajouter un administrateur</a>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom d'utilisateur</th>
+                        <th>Email</th>
+                        <th>Rôle</th>
+                        <th>Centre assigné</th>
+                        <th>Actif</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if administrateurs %}
+                        {% for admin in administrateurs %}
+                            <tr>
+                                <td>{{ admin.id }}</td>
+                                <td>{{ admin.user.username }}</td>
+                                <td>{{ admin.user.email }}</td>
+                                <td>
+                                    {% if admin.role == 'ADMIN-PRINCIPAL' %}
+                                        <span class="badge badge-admin">Admin Principal</span>
+                                    {% else %}
+                                        <span class="badge badge-sous-admin">Sous-Admin</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ admin.centre.nom|default:"Aucun" }}</td>
+                                <td>
+                                    {% if admin.actif %}
+                                        <i class="fas fa-check" style="color: #28a745;"></i> Actif
+                                    {% else %}
+                                        <i class="fas fa-times" style="color: #dc3545;"></i> Inactif
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'public:edit_administrateur' admin.id %}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                                    <a href="{% url 'public:delete_administrateur' admin.id %}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr?')"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" style="text-align: center;">Aucun administrateur trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Villes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .table-container { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
+        th { background: #f8f9fa; font-weight: 600; }
+        .btn { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; color: white; display: inline-block; }
+        .btn-primary { background: #667eea; }
+        .btn-danger { background: #dc3545; }
+        .btn-edit { background: #ffc107; color: #000; }
+        .btn-add { background: #28a745; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-city"></i> Liste des Villes</h1>
+        </div>
+        <div class="table-container">
+            <a href="{% url 'public:create_ville' %}" class="btn btn-add"><i class="fas fa-plus"></i> Ajouter une ville</a>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Province</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if villes %}
+                        {% for ville in villes %}
+                            <tr>
+                                <td>{{ ville.id }}</td>
+                                <td>{{ ville.nom }}</td>
+                                <td>{{ ville.province.nom }}</td>
+                                <td>
+                                    <a href="{% url 'public:edit_ville' ville.id %}" class="btn btn-edit"><i class="fas fa-edit"></i></a>
+                                    <a href="{% url 'public:delete_ville' ville.id %}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" style="text-align: center;">Aucune ville trouvée</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

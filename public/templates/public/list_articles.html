@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Articles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .table-container { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
+        th { background: #f8f9fa; font-weight: 600; }
+        .btn { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; color: white; display: inline-block; }
+        .btn-primary { background: #667eea; }
+        .btn-danger { background: #dc3545; }
+        .btn-edit { background: #ffc107; color: #000; }
+        .btn-add { background: #28a745; margin-bottom: 15px; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 3px; font-size: 12px; }
+        .badge-published { background: #28a745; color: white; }
+        .badge-draft { background: #ffc107; color: #000; }
+        .truncate { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-newspaper"></i> Liste des Articles</h1>
+        </div>
+        
+        <!-- Statistiques -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <div style="font-size: 28px; font-weight: 700;">{{ articles_count|default:'0' }}</div>
+                <div style="font-size: 12px; opacity: 0.9; margin-top: 8px;">Total d'articles</div>
+            </div>
+            <div style="background: #28a745; color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <div style="font-size: 28px; font-weight: 700;">{{ articles_published|default:'0' }}</div>
+                <div style="font-size: 12px; opacity: 0.9; margin-top: 8px;">Publiés</div>
+            </div>
+            <div style="background: #ffc107; color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <div style="font-size: 28px; font-weight: 700;">{{ articles_draft|default:'0' }}</div>
+                <div style="font-size: 12px; opacity: 0.9; margin-top: 8px;">Brouillons</div>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <a href="{% url 'public:create_article' %}" class="btn btn-add"><i class="fas fa-plus"></i> Ajouter un article</a>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Titre</th>
+                        <th>Contenu</th>
+                        <th>Fichier</th>
+                        <th>Statut</th>
+                        <th>Date création</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if articles %}
+                        {% for article in articles %}
+                            <tr>
+                                <td>{{ article.id }}</td>
+                                <td>{{ article.titre }}</td>
+                                <td class="truncate">{{ article.contenu }}</td>
+                                <td>
+                                    {% if article.fichier %}
+                                        <a href="{{ article.fichier.url }}" title="{{ article.fichier.name }}" style="color: #667eea; text-decoration: none;" target="_blank">
+                                            <i class="fas fa-file-download"></i> Télécharger
+                                        </a>
+                                    {% else %}
+                                        <span style="color: #6c757d;">—</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if article.publie %}
+                                        <span class="badge badge-published">Publié</span>
+                                    {% else %}
+                                        <span class="badge badge-draft">Brouillon</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ article.date_creation|date:"d/m/Y H:i" }}</td>
+                                <td>
+                                    <a href="{% url 'public:edit_article' article.id %}" class="btn btn-edit"><i class="fas fa-edit"></i></a>
+                                    <a href="{% url 'public:delete_article' article.id %}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" style="text-align: center;">Aucun article trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

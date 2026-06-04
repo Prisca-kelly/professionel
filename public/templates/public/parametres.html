@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres du Système</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .settings-container { display: grid; grid-template-columns: 1fr 3fr; gap: 25px; }
+        .settings-menu { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); height: fit-content; position: sticky; top: 20px; }
+        .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; text-decoration: none; color: #6c757d; transition: all 0.3s; }
+        .menu-item:hover { background: #f8f9fa; color: #667eea; }
+        .menu-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .settings-content { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #e9ecef; padding-bottom: 15px; }
+        .setting-group { margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #e9ecef; }
+        .setting-group:last-child { border-bottom: none; }
+        .setting-label { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-weight: 600; color: #2c3e50; }
+        .setting-desc { font-size: 13px; color: #6c757d; margin-bottom: 12px; }
+        .toggle-switch { position: relative; width: 50px; height: 26px; background: #ccc; border-radius: 13px; cursor: pointer; transition: all 0.3s; display: inline-block; }
+        .toggle-switch.active { background: #28a745; }
+        .toggle-slider { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: all 0.3s; }
+        .toggle-switch.active .toggle-slider { left: 27px; }
+        .select-box { padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; color: white; display: inline-block; font-size: 13px; }
+        .btn-primary { background: #667eea; }
+        .btn-secondary { background: #6c757d; }
+        .btn:hover { opacity: 0.9; }
+        .info-box { background: #e7f3ff; border-left: 4px solid #667eea; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .info-box i { color: #667eea; margin-right: 10px; }
+        .info-box a { color: #667eea; font-weight: 600; }
+        .hidden { display: none; }
+        @media (max-width: 768px) {
+            .settings-container { grid-template-columns: 1fr; }
+            .settings-menu { position: static; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-cog"></i> Paramètres du Système</h1>
+            <p>Gérez les configurations globales de votre portail d'administration</p>
+        </div>
+        
+        <div class="settings-container">
+            <!-- Menu latéral -->
+            <div class="settings-menu">
+                <a href="#profil" class="menu-item active" onclick="showSection('profil'); return false;">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Mon Profil</span>
+                </a>
+                <a href="#general" class="menu-item" onclick="showSection('general'); return false;">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Général</span>
+                </a>
+                <a href="#a-propos" class="menu-item" onclick="showSection('a-propos'); return false;">
+                    <i class="fas fa-info-circle"></i>
+                    <span>À propos</span>
+                </a>
+            </div>
+            
+            <!-- Contenu des paramètres -->
+            <div class="settings-content">
+                <!-- Section Général -->
+                <div id="general" class="section">
+                    <h2 class="section-title">Paramètres Généraux</h2>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <i class="fas fa-building"></i> Nom de l'établissement
+                        </label>
+                        <div class="setting-desc">Le nom principal affiché dans le système</div>
+                        <input type="text" class="select-box" value="Portail d'Administration Ministériel" readonly style="width: 100%; margin-bottom: 10px;">
+                        <button class="btn btn-primary"><i class="fas fa-edit"></i> Modifier</button>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <i class="fas fa-language"></i> Langue
+                        </label>
+                        <div class="setting-desc">Langue par défaut de l'interface</div>
+                        <select class="select-box" style="width: 100%;">
+                            <option selected>Français</option>
+                            <option>Anglais</option>
+                            <option>Español</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <i class="fas fa-palette"></i> Thème
+                        </label>
+                        <div class="setting-desc">Sélectionnez l'apparence de l'interface</div>
+                        <select class="select-box" style="width: 100%;">
+                            <option selected>Thème Clair (Par défaut)</option>
+                            <option>Thème Sombre</option>
+                            <option>Thème Bleu</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Section Utilisateurs -->
+                <div id="utilisateurs" class="section hidden">
+                    <h2 class="section-title">Gestion des Utilisateurs</h2>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <i class="fas fa-user-check"></i> Inscription automatique
+                        </label>
+                        <div class="setting-desc">Permettre l'auto-inscription des utilisateurs</div>
+                        <div class="toggle-switch" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <i class="fas fa-key"></i> Expiration du mot de passe
+                        </label>
+                        <div class="setting-desc">Forcer le changement de mot de passe après N jours</div>
+                        <input type="number" class="select-box" value="90" style="width: 150px;"> jours
+                    </div>
+                </div>
+                
+                <!-- Section Sécurité -->
+                <div id="securite" class="section hidden">
+                    <h2 class="section-title">Paramètres de Sécurité</h2>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <i class="fas fa-shield-alt"></i> Authentification à deux facteurs
+                        </label>
+                        <div class="setting-desc">Exiger une vérification supplémentaire à la connexion</div>
+                        <div class="toggle-switch" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <i class="fas fa-eye"></i> Journalisation des activités
+                        </label>
+                        <div class="setting-desc">Enregistrer toutes les actions système</div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section À propos -->
+                <div id="a-propos" class="section hidden">
+                    <h2 class="section-title">À propos du Système</h2>
+                    
+                    <div style="padding: 20px; background: #f8f9fa; border-radius: 10px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 15px;">Informations du Système</h3>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr style="border-bottom: 1px solid #e9ecef;">
+                                <td style="padding: 10px; font-weight: 600; width: 200px;">Version</td>
+                                <td style="padding: 10px;">1.0.0</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e9ecef;">
+                                <td style="padding: 10px; font-weight: 600;">Framework</td>
+                                <td style="padding: 10px;">Django 4.0+</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e9ecef;">
+                                <td style="padding: 10px; font-weight: 600;">Base de données</td>
+                                <td style="padding: 10px;">MySQL</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; font-weight: 600;">Dernière mise à jour</td>
+                                <td style="padding: 10px;">{{ "now"|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div>
+                        <a href="{% url 'public:dashboard' %}" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => item.classList.remove('active'));
+            event.target.closest('.menu-item').classList.add('active');
+        }
+        
+        function toggleSwitch(element) {
+            element.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

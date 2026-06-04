@@ -1,0 +1,79 @@
+<div x-show="open" x-transition class="md:hidden pb-4 space-y-2">
+    <a href="#accueil" @click="open = false" class="block text-gray-700 hover:text-green-700 font-medium py-2">Accueil</a>
+    <a href="#ministere" @click="open = false" class="block text-gray-700 hover:text-green-700 font-medium py-2">Ministère</a>
+    <a href="#ministre" @click="open = false" class="block text-gray-700 hover:text-green-700 font-medium py-2">Le Ministre</a>
+    <div class="border border-gray-200 rounded-lg overflow-hidden">
+        <button
+            type="button"
+            class="w-full flex items-center justify-between px-3 py-2 text-gray-700 hover:text-green-700 font-medium"
+            @click="toggleProvinces()"
+        >
+            <span>Provinces</span>
+            <svg class="w-5 h-5 transition-transform duration-200" :class="provincesOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </button>
+        <div x-show="provincesOpen" x-transition class="px-3 pb-3 space-y-3 bg-gray-50">
+            <div>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Provinces</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <template x-for="p in provinces" :key="p.name">
+                        <button
+                            type="button"
+                            class="px-3 py-2 rounded-lg text-sm font-medium text-left"
+                            :class="selectedProvince === p.name ? 'bg-green-100 text-green-800' : 'bg-white text-gray-700'"
+                            @click="selectProvince(p.name)"
+                        >
+                            <span x-text="p.name"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Villes</p>
+                <template x-if="!selectedProvince">
+                    <p class="text-sm text-gray-500">Choisis une province</p>
+                </template>
+                <div class="grid grid-cols-2 gap-2">
+                    <template x-for="c in cities" :key="c.name">
+                        <button
+                            type="button"
+                            class="px-3 py-2 rounded-lg text-sm font-medium text-left"
+                            :class="selectedCity === c.name ? 'bg-blue-100 text-blue-800' : 'bg-white text-gray-700'"
+                            @click="selectCity(c.name)"
+                        >
+                            <span x-text="c.name"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Centres</p>
+                <template x-if="!selectedCity">
+                    <p class="text-sm text-gray-500">Choisis une ville</p>
+                </template>
+                <div class="space-y-2">
+                    <template x-for="ctr in centers" :key="ctr">
+                        <button
+                            type="button"
+                            class="w-full px-3 py-2 rounded-lg text-sm font-medium text-left bg-white text-gray-700"
+                            @click="goToCenter(ctr); open = false"
+                        >
+                            <span x-text="ctr"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#actualites" @click="open = false" class="block text-gray-700 hover:text-green-700 font-medium py-2">Actualités</a>
+    <a href="#contact" @click="open = false" class="block text-gray-700 hover:text-green-700 font-medium py-2">Contact</a>
+    <a
+        href="{% url 'public:login' %}"
+        class="mt-2 inline-flex items-center justify-center w-full rounded-lg bg-gradient-to-r from-blue-600 to-green-700 text-white font-bold py-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01]"
+    >
+        Administrateur d'Espace
+    </a>
+</div>

@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Support de cours</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .form-container { background: white; border-radius: 10px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
+        input, textarea { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 14px; }
+        input:focus, textarea:focus { outline: none; border-color: #667eea; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-plus-circle"></i> Ajouter un Support de cours</h1>
+            <p>Module : {{ module.nom }}</p>
+        </div>
+        <div class="form-container">
+            {% if messages %}
+            <ul style="list-style:none; margin-bottom:20px;">
+                {% for message in messages %}
+                <li style="padding:10px; border-radius:6px; margin-bottom:8px; {% if message.tags == 'error' %}background:#f8d7da;color:#721c24;{% else %}background:#d4edda;color:#155724;{% endif %}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="titre">Titre du support *</label>
+                    <input type="text" id="titre" name="titre" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="fichier">Fichier (upload)</label>
+                    <input type="file" id="fichier" name="fichier" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar,.txt,.odt,.ods,.odp,image/*">
+                    <p style="font-size:13px; color:#6c757d; margin-top:8px;">Formats courants : PDF, Office, archives. Taille raisonnable recommandée.</p>
+                </div>
+                <div class="form-group">
+                    <label for="fichier_url">Ou URL du fichier</label>
+                    <input type="url" id="fichier_url" name="fichier_url" placeholder="https://…">
+                    <p style="font-size:13px; color:#6c757d; margin-top:8px;">Renseignez <strong>au moins</strong> un fichier joint <strong>ou</strong> une URL.</p>
+                </div>
+                <div class="form-group">
+                    <label for="type_fichier">Type de fichier</label>
+                    <input type="text" id="type_fichier" name="type_fichier" placeholder="PDF, DOCX, PPTX, etc. (auto si vide et fichier joint)">
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Enregistrer</button>
+                    <a href="{% url 'public:list_supports_by_module' module.id %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!-- Hero Section -->
+<section
+    id="accueil"
+    x-data="heroCarousel()"
+    x-init="init()"
+    @mouseenter="stop()"
+    @mouseleave="start()"
+    class="relative h-screen overflow-hidden"
+>
+    <!-- Slides -->
+    <template x-for="(slide, i) in slides" :key="i">
+        <div x-show="active === i" class="absolute inset-0" x-transition.opacity.duration.450ms>
+            <div class="absolute inset-0 opacity-90" :class="`bg-gradient-to-r ${slide.overlay}`"></div>
+            <img
+                :src="slide.image"
+                :alt="slide.title"
+                class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-40 parallax-image"
+                loading="lazy"
+            >
+        </div>
+    </template>
+
+    <!-- Content -->
+    <div class="relative h-full flex items-center justify-center px-4">
+        <div class="max-w-4xl w-full">
+            <div class="text-center text-white mb-10">
+                <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full text-xs sm:text-sm font-bold backdrop-blur-md">
+                    <span class="w-2 h-2 rounded-full bg-yellow-300"></span>
+                    <span x-text="slides[active].eyebrow"></span>
+                </div>
+
+                <h1
+                    class="mt-5 text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight"
+                    x-text="slides[active].title"
+                    x-transition:enter="transition ease-in-out duration-500"
+                    x-transition:enter-start="opacity-0 translate-y-6"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in-out duration-250"
+                    x-transition:leave-start="opacity-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 -translate-y-4"
+                    :key="`title-${active}`"
+                ></h1>
+
+                <p
+                    class="mt-4 text-lg sm:text-xl md:text-2xl text-white/90"
+                    x-text="slides[active].subtitle"
+                    x-transition:enter="transition ease-in-out duration-550 delay-75"
+                    x-transition:enter-start="opacity-0 translate-y-6"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in-out duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 -translate-y-4"
+                    :key="`sub-${active}`"
+                ></p>
+            </div>
+
+            <!-- Advanced Search Bar -->
+            <div x-data="advancedSearch()" x-init="init()" class="mb-8">
+                <div class="relative">
+                    <!-- Search Input -->
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input
+                            x-model="query"
+                            @keydown="handleKeydown($event)"
+                            @focus="showResults = results.length > 0"
+                            @click.outside="showResults = false"
+                            type="text"
+                            placeholder="Rechercher une province, ville, centre de formation..."
+                            class="w-full pl-12 pr-4 py-4 text-lg bg-white/95 backdrop-blur-md border-2 border-white/30 rounded-2xl focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-300/50 transition-all duration-300 placeholder-gray-500 shadow-xl"
+                        />
+                        <!-- Loading spinner -->
+                        <div x-show="isLoading" class="absolute inset-y-0 right-4 flex items-center">
+                            <div class="animate-spin">
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search Results Dropdown -->
+                    <div
+                        x-show="showResults"
+                        x-transition
+                        @click.outside="showResults = false"
+                        class="absolute top-full left-0 right-0 mt-3 bg-white rounded-xl shadow-2xl overflow-hidden z-50 border border-gray-200 max-h-96 overflow-y-auto"
+                    >
+                        <template x-if="results.length === 0 && query.length > 0">
+                            <div class="p-6 text-center">
+                                <p class="text-gray-500 text-sm">Aucun résultat trouvé pour "<span x-text="query"></span>"</p>
+                                <p class="text-gray-400 text-xs mt-2">Essayez avec d'autres mots-clés</p>
+                            </div>
+                        </template>
+
+                        <template x-for="(result, index) in results" :key="index">
+                            <button
+                                type="button"
+                                @click="selectResult(result)"
+                                :class="selectedIndex === index ? 'bg-green-50 border-l-4 border-green-600' : 'hover:bg-gray-50 border-l-4 border-transparent'"
+                                class="w-full text-left px-4 py-3 transition-all duration-200 flex items-start gap-3"
+                            >
+                                <span class="text-xl flex-shrink-0" x-text="result.icon"></span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-gray-900 truncate" x-text="result.name"></p>
+                                    <p class="text-sm text-gray-600" x-text="result.category"></p>
+                                    <template x-if="result.specialty">
+                                        <p class="text-xs text-green-600 mt-1" x-text="result.specialty"></p>
+                                    </template>
+                                </div>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Search Hints -->
+                <div x-show="!showResults && query.length === 0" x-transition class="mt-4 flex flex-wrap gap-2 justify-center">
+                    <span class="text-xs text-white/80 bg-white/10 px-3 py-1 rounded-full">
+                        💡 Tapez "Estuaire", "Libreville", "Numérique"...
+                    </span>
+                </div>
+            </div>
+
+            <!-- Hero Buttons -->
+            <div class="text-center">
+                <div class="mt-9 flex flex-col sm:flex-row gap-4 justify-center">
+                    <button
+                        type="button"
+                        class="inline-flex justify-center items-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 shadow-lg"
+                        @click="document.querySelector(slides[active].ctaPrimary.href)?.scrollIntoView({ behavior: 'smooth', block: 'start' })"
+                    >
+                        <span x-text="slides[active].ctaPrimary.label"></span>
+                    </button>
+                    <button
+                        type="button"
+                        class="inline-flex justify-center items-center border-2 border-blue-200/80 text-white font-bold py-3 px-8 rounded-xl hover:bg-blue-500 hover:border-blue-500 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
+                        @click="document.querySelector(slides[active].ctaSecondary.href)?.scrollIntoView({ behavior: 'smooth', block: 'start' })"
+                    >
+                        <span x-text="slides[active].ctaSecondary.label"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="absolute inset-x-0 bottom-10 flex items-center justify-center gap-6 px-4">
+        <button
+            type="button"
+            data-skip-global-hoverfx
+            @click="prev()"
+            class="w-12 h-12 rounded-full bg-white/15 border border-white/20 backdrop-blur-md text-white grid place-items-center shadow-lg hover:bg-white/20 transition-all duration-300 ease-in-out hover:scale-105"
+            aria-label="Slide précédent"
+        >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+
+        <div class="flex items-center gap-2">
+            <template x-for="(s, i) in slides" :key="`dot-${i}`">
+                <button
+                    type="button"
+                    data-skip-global-hoverfx
+                    class="h-2.5 rounded-full transition-all duration-300 ease-in-out"
+                    :class="active === i ? 'w-10 bg-yellow-300 shadow-[0_0_22px_rgba(255,193,7,0.5)]' : 'w-2.5 bg-white/60 hover:bg-white'"
+                    @click="goTo(i)"
+                    :aria-label="`Aller au slide ${i + 1}`"
+                ></button>
+            </template>
+        </div>
+
+        <button
+            type="button"
+            data-skip-global-hoverfx
+            @click="next()"
+            class="w-12 h-12 rounded-full bg-white/15 border border-white/20 backdrop-blur-md text-white grid place-items-center shadow-lg hover:bg-white/20 transition-all duration-300 ease-in-out hover:scale-105"
+            aria-label="Slide suivant"
+        >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
+    </div>
+</section>

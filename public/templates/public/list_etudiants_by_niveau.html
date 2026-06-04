@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Étudiants - {{ niveau.nom }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .breadcrumb { margin-bottom: 20px; color: #6c757d; }
+        .breadcrumb a { color: #667eea; text-decoration: none; }
+        .table-container { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
+        th { background: #f8f9fa; font-weight: 600; }
+        .btn { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; color: white; display: inline-block; }
+        .btn-primary { background: #667eea; }
+        .btn-danger { background: #dc3545; }
+        .btn-edit { background: #ffc107; color: #000; }
+        .btn-add { background: #28a745; margin-bottom: 15px; }
+        .statut-badge { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .statut-actif { background: #28a745; color: white; }
+        .statut-suspendu { background: #ffc107; color: #000; }
+        .statut-abandon { background: #dc3545; color: white; }
+        .statut-diplome { background: #17a2b8; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{% url 'public:dashboard' %}">Tableau de bord</a> > 
+            <a href="{% url 'public:list_centres' %}">Centres</a> > 
+            <a href="{% url 'public:list_filieres_by_centre' niveau.filiere.centre.id %}">{{ niveau.filiere.centre.nom }}</a> > 
+            <a href="{% url 'public:list_niveaux_by_filiere' niveau.filiere.id %}">{{ niveau.filiere.nom }}</a> > 
+            {{ niveau.nom }}
+        </div>
+        <div class="header">
+            <h1><i class="fas fa-users"></i> Étudiants - {{ niveau.nom }}</h1>
+        </div>
+        <div class="table-container">
+            <a href="{% url 'public:create_etudiant' niveau.id %}" class="btn btn-add"><i class="fas fa-plus"></i> Ajouter un étudiant</a>
+            <a href="{% url 'public:list_statuts' %}" class="btn btn-primary" style="margin-left: 10px;"><i class="fas fa-tags"></i> Gérer les statuts</a>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Matricule</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Sexe</th>
+                        <th>Email</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for etudiant in etudiants %}
+                    <tr>
+                        <td>{{ etudiant.matricule }}</td>
+                        <td>{{ etudiant.nom }}</td>
+                        <td>{{ etudiant.prenom }}</td>
+                        <td>{{ etudiant.sexe }}</td>
+                        <td>{{ etudiant.email|default:"-" }}</td>
+                        <td><span class="statut-badge statut-{{ etudiant.statut.libelle|lower }}">{{ etudiant.statut.libelle }}</span></td>
+                        <td>
+                            <a href="{% url 'public:edit_etudiant' etudiant.id %}" class="btn btn-edit"><i class="fas fa-edit"></i></a>
+                            <a href="{% url 'public:delete_etudiant' etudiant.id %}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="text-align: center;">Aucun étudiant trouvé</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

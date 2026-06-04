@@ -1,0 +1,525 @@
+/*
+ * Ministère de l'Enseignement Professionnel du Gabon
+ * Styles pour la recherche avancée et la carte interactive
+ * Optimisés pour Django avec variables CSS personnalisables
+ */
+
+/* Variables CSS pour la recherche et la carte */
+:root {
+    --search-primary: #059669;
+    --search-primary-light: #047857;
+    --search-primary-dark: #065f46;
+    --search-secondary: #0ea5e9;
+    --search-bg: #ffffff;
+    --search-text: #1f2937;
+    --search-border: #e5e7eb;
+    --search-shadow: rgba(0, 0, 0, 0.1);
+    
+    --map-primary: #059669;
+    --map-secondary: #0ea5e9;
+    --map-accent: #16a34a;
+    
+    --transition-search: cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: 0.2s;
+    --transition-medium: 0.3s;
+}
+
+/* Conteneur de recherche */
+.search-container {
+    position: relative;
+    z-index: 10;
+}
+
+.search-input {
+    transition: all var(--transition-medium) var(--transition-search);
+    background-color: var(--search-bg);
+    color: var(--search-text);
+    border: 2px solid var(--search-border);
+    border-radius: var(--border-radius-xl);
+    padding: 1rem 1rem 1rem 3rem;
+    width: 100%;
+    font-size: 1.125rem;
+    backdrop-filter: blur(12px);
+}
+
+.search-input:focus {
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2), 0 10px 25px var(--search-shadow);
+    border-color: var(--search-primary);
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #6b7280;
+}
+
+/* Résultats de recherche */
+.search-results {
+    box-shadow: var(--shadow-xl);
+    max-height: 400px;
+    overflow-y: auto;
+    animation: slideInUp var(--transition-medium) var(--transition-search);
+    background-color: var(--search-bg);
+    border: 1px solid var(--search-border);
+    border-radius: var(--border-radius-xl);
+    margin-top: 0.75rem;
+}
+
+.search-result-item {
+    transition: all var(--transition-fast) ease;
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid transparent;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.search-result-item:hover {
+    background-color: #f3f4f6;
+    padding-left: 1.25rem;
+    border-left-color: var(--search-primary);
+}
+
+.search-result-item.active {
+    background-color: #dcfce7;
+    border-left-color: var(--search-primary);
+}
+
+.search-result-item:focus-visible {
+    outline: 2px solid var(--search-primary);
+    outline-offset: -2px;
+}
+
+/* Conteneur de la carte */
+#gabon-map {
+    border-radius: var(--border-radius-xl);
+    overflow: hidden;
+    border: 1px solid var(--search-border);
+    min-height: 400px;
+}
+
+/* Marqueurs de provinces */
+.province-marker {
+    cursor: pointer;
+    transition: all var(--transition-medium) ease;
+}
+
+.province-marker:hover {
+    filter: brightness(1.1);
+    transform: scale(1.05);
+}
+
+/* Personnalisation des popups Leaflet */
+.province-popup {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.province-popup h3 {
+    font-family: 'Poppins', sans-serif;
+    margin: 0 0 0.5rem 0;
+    color: var(--map-primary);
+    font-weight: 600;
+}
+
+.province-popup p {
+    margin: 0.25rem 0;
+    color: #4b5563;
+}
+
+.province-popup button {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--map-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.province-popup button:hover {
+    background-color: var(--search-primary-dark);
+}
+
+/* Styles Leaflet personnalisés */
+.leaflet-popup-content-wrapper {
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg);
+    border: none;
+}
+
+.leaflet-popup-tip {
+    background-color: white;
+}
+
+.leaflet-container {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: white;
+    border-radius: var(--border-radius-sm);
+    margin: 4px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+}
+
+.leaflet-bar a {
+    background-color: white;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid #e5e7eb;
+    transition: all var(--transition-fast);
+}
+
+.leaflet-bar a:hover {
+    background-color: #f3f4f6;
+    border-color: var(--map-primary);
+}
+
+/* Panneau de détails des provinces */
+.province-details-panel {
+    background: white;
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    border: 1px solid var(--search-border);
+}
+
+.province-details-header {
+    background: linear-gradient(to right, var(--map-primary), var(--map-secondary));
+    color: white;
+    padding: 1rem;
+}
+
+.province-details-header h3 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+}
+
+.province-details-header p {
+    margin: 0.25rem 0 0 0;
+    opacity: 0.9;
+    font-size: 0.875rem;
+}
+
+.province-details-content {
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+/* Éléments de villes */
+.city-item {
+    border-left: 4px solid var(--map-primary);
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+    transition: all var(--transition-fast) ease;
+    cursor: pointer;
+}
+
+.city-item:hover {
+    background-color: #f0fdf4;
+    border-radius: var(--border-radius-sm);
+    padding: 0.5rem;
+    padding-left: 1rem;
+}
+
+.city-item h4 {
+    margin: 0 0 0.5rem 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: var(--map-primary);
+}
+
+/* Éléments de centres */
+.center-item {
+    background-color: #f9fafb;
+    padding: 0.5rem;
+    border-radius: var(--border-radius-sm);
+    margin: 0.5rem 0;
+    cursor: pointer;
+    transition: all var(--transition-fast) ease;
+    border-left: 3px solid transparent;
+}
+
+.center-item:hover {
+    background-color: #dcfce7;
+    transform: translateX(4px);
+    border-left-color: var(--map-accent);
+}
+
+.center-item:focus-visible {
+    outline: 2px solid var(--map-primary);
+    outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Classes d'animation */
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-slide-in-up {
+    animation: slideInUp var(--transition-medium) var(--transition-search);
+}
+
+.animate-slide-in-right {
+    animation: slideInRight var(--transition-medium) ease;
+}
+
+/* Indices de recherche */
+.search-hints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    animation: fadeInScale var(--transition-medium) ease;
+    margin-top: 1rem;
+}
+
+.search-hint {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    transition: all var(--transition-fast);
+}
+
+.search-hint:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* État de chargement */
+.loading-spinner {
+    animation: spin 1s linear infinite;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e5e7eb;
+    border-top: 2px solid var(--search-primary);
+    border-radius: 50%;
+}
+
+/* Design responsive */
+@media (max-width: 1024px) {
+    .search-results {
+        max-height: 300px;
+    }
+    
+    .province-details-panel {
+        margin-top: 1rem;
+    }
+    
+    #gabon-map {
+        min-height: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-input {
+        font-size: 16px; /* Empêche le zoom sur iOS */
+        padding: 0.875rem 0.875rem 0.875rem 2.5rem;
+    }
+    
+    .search-results {
+        max-height: 250px;
+        margin-top: 0.5rem;
+    }
+    
+    #gabon-map {
+        min-height: 300px;
+    }
+    
+    .province-details-content {
+        max-height: 300px;
+        padding: 0.75rem;
+    }
+    
+    .search-hints {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Notifications Toast */
+.toast {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    padding: 1rem 1.5rem;
+    background-color: var(--search-primary);
+    color: white;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-xl);
+    z-index: 50;
+    animation: slideInRight var(--transition-medium) ease forwards;
+    max-width: 300px;
+}
+
+.toast.error {
+    background-color: #dc2626;
+}
+
+.toast.info {
+    background-color: var(--map-secondary);
+}
+
+.toast.warning {
+    background-color: #f59e0b;
+}
+
+/* Scrollbar personnalisée */
+.province-details-content::-webkit-scrollbar,
+.search-results::-webkit-scrollbar {
+    width: 6px;
+}
+
+.province-details-content::-webkit-scrollbar-track,
+.search-results::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 10px;
+}
+
+.province-details-content::-webkit-scrollbar-thumb,
+.search-results::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.province-details-content::-webkit-scrollbar-thumb:hover,
+.search-results::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Accessibilité - états focus */
+.search-input:focus-visible {
+    outline: 2px solid var(--search-primary);
+    outline-offset: 2px;
+}
+
+button[onclick]:focus-visible {
+    outline: 2px solid var(--search-primary);
+    outline-offset: 2px;
+}
+
+/* Support du mode sombre (optionnel) */
+@media (prefers-color-scheme: dark) {
+    .dark-mode {
+        --search-bg: #1f2937;
+        --search-text: #f3f4f6;
+        --search-border: #374151;
+        --search-shadow: rgba(0, 0, 0, 0.3);
+    }
+    
+    .dark-mode .search-results {
+        background-color: #1f2937;
+        color: #f3f4f6;
+        border-color: #374151;
+    }
+    
+    .dark-mode .search-result-item:hover {
+        background-color: #374151;
+    }
+    
+    .dark-mode .search-result-item.active {
+        background-color: #065f46;
+    }
+    
+    .dark-mode .center-item {
+        background-color: #374151;
+        color: #f3f4f6;
+    }
+    
+    .dark-mode .center-item:hover {
+        background-color: #047857;
+    }
+    
+    .dark-mode .province-details-panel {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+}
+
+/* Réduction des mouvements (accessibilité) */
+@media (prefers-reduced-motion: reduce) {
+    .search-input,
+    .search-results,
+    .province-marker,
+    .center-item,
+    .city-item {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    .loading-spinner {
+        animation: none;
+        border: 2px solid var(--search-primary);
+    }
+}
+
+/* Impression */
+@media print {
+    .search-container,
+    #gabon-map {
+        display: none !important;
+    }
+    
+    .province-details-panel {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}
