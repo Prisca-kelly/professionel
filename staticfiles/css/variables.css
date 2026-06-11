@@ -1,0 +1,256 @@
+/*
+ * Variables CSS personnalisables pour le thème MEPG
+ * Peuvent être surchargées selon les besoins
+ */
+
+/* === Variables de couleurs principales === */
+:root {
+    /* Couleurs institutionnelles */
+    --mepg-green: #00A859;
+    --mepg-green-light: #00C96A;
+    --mepg-green-dark: #008F4C;
+    --mepg-green-darker: #007640;
+    
+    --mepg-yellow: #FFD700;
+    --mepg-yellow-light: #FFE066;
+    --mepg-yellow-dark: #E6C200;
+    
+    --mepg-blue: #0066CC;
+    --mepg-blue-light: #3385E6;
+    --mepg-blue-dark: #0052A3;
+    
+    /* Couleurs neutres */
+    --mepg-white: #FFFFFF;
+    --mepg-gray-50: #F9FAFB;
+    --mepg-gray-100: #F3F4F6;
+    --mepg-gray-200: #E5E7EB;
+    --mepg-gray-300: #D1D5DB;
+    --mepg-gray-400: #9CA3AF;
+    --mepg-gray-500: #6B7280;
+    --mepg-gray-600: #4B5563;
+    --mepg-gray-700: #374151;
+    --mepg-gray-800: #1F2937;
+    --mepg-gray-900: #111827;
+    --mepg-black: #000000;
+    
+    /* Couleurs sémantiques */
+    --mepg-success: #10B981;
+    --mepg-success-light: #34D399;
+    --mepg-success-dark: #059669;
+    
+    --mepg-warning: #F59E0B;
+    --mepg-warning-light: #FCD34D;
+    --mepg-warning-dark: #D97706;
+    
+    --mepg-error: #EF4444;
+    --mepg-error-light: #F87171;
+    --mepg-error-dark: #DC2626;
+    
+    --mepg-info: #3B82F6;
+    --mepg-info-light: #60A5FA;
+    --mepg-info-dark: #2563EB;
+}
+
+/* === Variables de typographie === */
+:root {
+    --font-family-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-family-secondary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-family-mono: 'Fira Code', 'Monaco', 'Cascadia Code', monospace;
+    
+    --font-size-xs: 0.75rem;     /* 12px */
+    --font-size-sm: 0.875rem;    /* 14px */
+    --font-size-base: 1rem;       /* 16px */
+    --font-size-lg: 1.125rem;     /* 18px */
+    --font-size-xl: 1.25rem;      /* 20px */
+    --font-size-2xl: 1.5rem;     /* 24px */
+    --font-size-3xl: 1.875rem;   /* 30px */
+    --font-size-4xl: 2.25rem;    /* 36px */
+    --font-size-5xl: 3rem;       /* 48px */
+    --font-size-6xl: 3.75rem;    /* 60px */
+    
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.75;
+}
+
+/* === Variables d'espacement === */
+:root {
+    --spacing-0: 0;
+    --spacing-1: 0.25rem;   /* 4px */
+    --spacing-2: 0.5rem;    /* 8px */
+    --spacing-3: 0.75rem;   /* 12px */
+    --spacing-4: 1rem;      /* 16px */
+    --spacing-5: 1.25rem;   /* 20px */
+    --spacing-6: 1.5rem;    /* 24px */
+    --spacing-8: 2rem;      /* 32px */
+    --spacing-10: 2.5rem;   /* 40px */
+    --spacing-12: 3rem;     /* 48px */
+    --spacing-16: 4rem;     /* 64px */
+    --spacing-20: 5rem;     /* 80px */
+    --spacing-24: 6rem;     /* 96px */
+    --spacing-32: 8rem;     /* 128px */
+}
+
+/* === Variables de bordures et rayons === */
+:root {
+    --border-width-0: 0;
+    --border-width-1: 1px;
+    --border-width-2: 2px;
+    --border-width-4: 4px;
+    --border-width-8: 8px;
+    
+    --border-radius-none: 0;
+    --border-radius-sm: 0.125rem;   /* 2px */
+    --border-radius-base: 0.25rem;  /* 4px */
+    --border-radius-md: 0.375rem;   /* 6px */
+    --border-radius-lg: 0.5rem;     /* 8px */
+    --border-radius-xl: 0.75rem;    /* 12px */
+    --border-radius-2xl: 1rem;      /* 16px */
+    --border-radius-3xl: 1.5rem;    /* 24px */
+    --border-radius-full: 9999px;
+}
+
+/* === Variables d'ombres === */
+:root {
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+    
+    /* Ombres colorées */
+    --shadow-green: 0 10px 15px -3px rgba(0, 168, 89, 0.1), 0 4px 6px -2px rgba(0, 168, 89, 0.05);
+    --shadow-blue: 0 10px 15px -3px rgba(0, 102, 204, 0.1), 0 4px 6px -2px rgba(0, 102, 204, 0.05);
+    --shadow-yellow: 0 10px 15px -3px rgba(255, 215, 0, 0.1), 0 4px 6px -2px rgba(255, 215, 0, 0.05);
+}
+
+/* === Variables de transitions === */
+:root {
+    --transition-duration-75: 75ms;
+    --transition-duration-100: 100ms;
+    --transition-duration-150: 150ms;
+    --transition-duration-200: 200ms;
+    --transition-duration-300: 300ms;
+    --transition-duration-500: 500ms;
+    --transition-duration-700: 700ms;
+    --transition-duration-1000: 1000ms;
+    
+    --transition-timing-linear: linear;
+    --transition-timing-ease: ease;
+    --transition-timing-ease-in: ease-in;
+    --transition-timing-ease-out: ease-out;
+    --transition-timing-ease-in-out: ease-in-out;
+    
+    --transition-all: all var(--transition-duration-300) var(--transition-timing-ease-in-out);
+    --transition-colors: color var(--transition-duration-300) var(--transition-timing-ease-in-out), 
+                                 background-color var(--transition-duration-300) var(--transition-timing-ease-in-out),
+                                 border-color var(--transition-duration-300) var(--transition-timing-ease-in-out);
+    --transition-opacity: opacity var(--transition-duration-300) var(--transition-timing-ease-in-out);
+    --transition-shadow: box-shadow var(--transition-duration-300) var(--transition-timing-ease-in-out);
+    --transition-transform: transform var(--transition-duration-300) var(--transition-timing-ease-in-out);
+}
+
+/* === Variables de z-index === */
+:root {
+    --z-index-dropdown: 1000;
+    --z-index-sticky: 1020;
+    --z-index-fixed: 1030;
+    --z-index-modal-backdrop: 1040;
+    --z-index-modal: 1050;
+    --z-index-popover: 1060;
+    --z-index-tooltip: 1070;
+    --z-index-toast: 1080;
+}
+
+/* === Variables de breakpoints === */
+:root {
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+    --breakpoint-2xl: 1536px;
+}
+
+/* === Variables spécifiques au thème Gabon === */
+:root {
+    --gabon-flag-green: #009739;
+    --gabon-flag-yellow: #FFD100;
+    --gabon-flag-blue: #0052B4;
+    
+    --gabon-terrain-green: #228B22;
+    --gabon-ocean-blue: #4682B4;
+    --gabon-sand-yellow: #F4A460;
+    
+    --gabon-primary-gradient: linear-gradient(135deg, var(--mepg-green) 0%, var(--mepg-blue) 100%);
+    --gabon-secondary-gradient: linear-gradient(135deg, var(--mepg-yellow) 0%, var(--mepg-green) 100%);
+    --gabon-tertiary-gradient: linear-gradient(135deg, var(--mepg-blue) 0%, var(--mepg-yellow) 100%);
+}
+
+/* === Thèmes personnalisés === */
+.theme-ministere {
+    --primary: var(--mepg-green);
+    --secondary: var(--mepg-yellow);
+    --accent: var(--mepg-blue);
+}
+
+.theme-administration {
+    --primary: var(--mepg-blue);
+    --secondary: var(--mepg-gray-600);
+    --accent: var(--mepg-green);
+}
+
+.theme-formation {
+    --primary: var(--mepg-yellow);
+    --secondary: var(--mepg-green);
+    --accent: var(--mepg-blue);
+}
+
+/* === Mode sombre === */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --mepg-gray-50: #111827;
+        --mepg-gray-100: #1F2937;
+        --mepg-gray-200: #374151;
+        --mepg-gray-300: #4B5563;
+        --mepg-gray-400: #6B7280;
+        --mepg-gray-500: #9CA3AF;
+        --mepg-gray-600: #D1D5DB;
+        --mepg-gray-700: #E5E7EB;
+        --mepg-gray-800: #F3F4F6;
+        --mepg-gray-900: #F9FAFB;
+        --mepg-white: #000000;
+        --mepg-black: #FFFFFF;
+    }
+}
+
+/* === Accessibilité === */
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --transition-duration-75: 0ms;
+        --transition-duration-100: 0ms;
+        --transition-duration-150: 0ms;
+        --transition-duration-200: 0ms;
+        --transition-duration-300: 0ms;
+        --transition-duration-500: 0ms;
+        --transition-duration-700: 0ms;
+        --transition-duration-1000: 0ms;
+    }
+}
+
+/* === Impression === */
+@media print {
+    :root {
+        --mepg-white: #FFFFFF;
+        --mepg-black: #000000;
+        --mepg-gray-500: #666666;
+    }
+}
